@@ -27,8 +27,8 @@ Automated Supreme checkout bot
 * Certain input names (credit card number, etc) seem random, which could mean that Supreme updates these frequently to dissuade botting. Inspecting page elements before the drop is the best way to ensure your info is input ahead of time.
 
 ## Final implementation goals
-- [ ] refreshes product site close to drop time until available
-- [ X ] automatically opens requested product page
-- [ X ] adds product to cart
-- [ X ] redirects to checkout page
-- [ X ] passes inputs into request fields, awaits checkout click
+- [X] refreshes product site close to drop time until available
+- [X] automatically opens requested product page
+- [X] adds product to cart
+- [X] redirects to checkout page
+- [X] passes inputs into request fields, awaits checkout click
