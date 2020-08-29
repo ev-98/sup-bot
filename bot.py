@@ -14,21 +14,24 @@ class SupremeBot:
         self.b = Browser('chrome')
     
     def find_product(self):
-        r = requests.get("{}{}{}".format(self.base, self.shop, self.info["category"])).text
-        soup = bs4.BeautifulSoup(r, 'lxml')
-       
-        temp_tuple = []
-        temp_link = []
+        try:
+            r = requests.get("{}{}{}".format(self.base, self.shop, self.info["category"])).text
+            soup = bs4.BeautifulSoup(r, 'lxml')
+            
+            temp_tuple = []
+            temp_link = []
 
-        for link in soup.find_all("a", href=True):
-            temp_tuple.append((link["href"], link.text))
-        
-        for i in temp_tuple:
-            if i[1] == self.info["product"] or i[1] == self.info["color"]:
-                temp_link.append(i[0])
-        
-        self.final_link = list(set([x for x in temp_link if temp_link.count(x) == 2]))[0]
-        print(self.final_link)
+            for link in soup.find_all("a", href=True):
+                temp_tuple.append((link["href"], link.text))
+                
+            for i in temp_tuple:
+                if i[1] == self.info["product"] or i[1] == self.info["color"]:
+                    temp_link.append(i[0])
+                
+            self.final_link = list(set([x for x in temp_link if temp_link.count(x) == 2]))[0]
+            return True
+        except:
+            return False
 
     def visit_site(self):
         self.b.visit("{}{}".format(self.base, str(self.final_link)))
@@ -62,10 +65,10 @@ class SupremeBot:
 
 if __name__=="__main__":
     INFO={
-    "product": "Lovers Tee",
-    "color": "Woodland Camo",
-    "size": "Large",
-    "category": "t-shirts",
+    "product": "Product",
+    "color": "Color",
+    "size": "Size",
+    "category": "category",
     "namefield": "example example",
     "emailfield": "example@example.com",
     "phonefield": "5555555555",
@@ -81,7 +84,22 @@ if __name__=="__main__":
     "ccv": "123",
     }
     bot = SupremeBot(**INFO)
-    bot.find_product()
+
+    ##Auto-refresh
+    found_product = False
+    # Increase max_iter for larger auto-refresh interval
+    max_iter = 10
+    counter = 1
+    while not found_product and counter < max_iter:
+        found_product = bot.find_product()
+        print("Tried ", counter, " times")
+        counter += 1
+    if not found_product:
+        raise Exception("No product found, check product/color parameters")
+
+
+
+    # bot.find_product()
     bot.init_browser()
     bot.visit_site()
     bot.checkout_fn()
